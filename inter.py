@@ -57,9 +57,6 @@ def checklist():
 
     px = f"https://grafana-ocp4.adiq.io/d/f5067f59-9f90-4e0f-b86c-8c2ba32fc3a8/monitor-pix-gw-bancario-geral?orgId=1&from=1740997996000&to=1741040658000&var-dataselecionada={data_url}"
     
-
-    print(mensagem)
-
     ############################################################################################################## VARIAVEIS
     t_fisico = "✅ [Transacional Físico](https://grafana-monitoring-hml-grafana-monitoring-hml.apps.svs.adiq.local/d/ee9atfdxwhg5cf/visao-geral-transacional-fisico-sniffer-dxc?orgId=1&from=now-30m&to=now&refresh=5s)"
 
@@ -101,7 +98,7 @@ def checklist():
     fisico_path = "fisico.png"
     driver.save_screenshot(fisico_path)
 
-    time.sleep(2)
+    time.sleep(1)
 
     # 🔹 Ajustes para os outros URLs
     grafana_ecommerce_url = "https://grafana-monitoring-hml-grafana-monitoring-hml.apps.svs.adiq.local/d/fe97u788lyneob/visao-geral-transacional-e-commerce?from=now-1h&to=now&orgId=1&refresh=5s"
@@ -111,7 +108,7 @@ def checklist():
     ecommerce_path = "ecommerce.png"
     driver.save_screenshot(ecommerce_path)
 
-    sleep(2)
+    sleep(1)
 
     grafana_arquivos_url = "https://grafana-ocp4.adiq.io/d/uAoTFkJMzr/monitoracao-arquivos-geral-ambiente-de-prd?orgId=1&from=now-1h&to=now&refresh=10s"
     driver.get(grafana_arquivos_url)
@@ -120,34 +117,34 @@ def checklist():
     arquivos_path = "arquivos.png"
     driver.save_screenshot(arquivos_path)
 
-    time.sleep(2)
+    time.sleep(1)
 
     unificada_url = "https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/f1b3c7d4-22a4-4956-be94-1a8c6103d4d4"
     driver.get(unificada_url)
-    time.sleep(10)
+    time.sleep(8)
 
     unificada_path = "unificada.png"
     driver.save_screenshot(unificada_path)
 
-    time.sleep(2)
+    time.sleep(1)
 
     banese_url = "https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/3cf45840-2021-11ee-a5b4-81e7ec0febaf"
     driver.get(banese_url)
-    time.sleep(10)
+    time.sleep(8)
 
     banese_path = "banese.png"
     driver.save_screenshot(banese_path)
 
-    time.sleep(2)
+    time.sleep(1)
 
     softpass_url = "https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/73b07c60-2395-11ef-a2fe-31640ea6f96c"
     driver.get(softpass_url)
-    time.sleep(10)
+    time.sleep(8)
 
     softpass_path = "softpass.png"
     driver.save_screenshot(softpass_path)
 
-    time.sleep(2)
+    time.sleep(1)
 
     pix_url = px
     driver.get(pix_url)
@@ -160,7 +157,7 @@ def checklist():
     pix_path = "pix.png"
     driver.save_screenshot(pix_path)
 
-    time.sleep(2)
+    time.sleep(1)
 
     zabbix_url = "http://radar.adiq.local/zabbix/zabbix.php?action=dashboard.view"
     driver.get(zabbix_url)
@@ -169,7 +166,7 @@ def checklist():
     zabbix_path = "zabbix.png"
     driver.save_screenshot(zabbix_path)
 
-    time.sleep(2)
+    time.sleep(1)
 
     uptime_url = "https://dashboard.uptimerobot.com/monitors"
     driver.get(uptime_url)
@@ -178,7 +175,7 @@ def checklist():
     uptime_path = "uptime.png"
     driver.save_screenshot(uptime_path)
 
-    time.sleep(2)
+    time.sleep(1)
     ######################################################################################################### TEAMS
 
     # 🔹 Acessar o Microsoft Teams Web
@@ -196,10 +193,10 @@ def checklist():
     try:
 
         # Aguarda o campo de texto
-        time.sleep(2)
+        time.sleep(1)
         chat_box = driver.find_element(By.XPATH, '//div[@contenteditable="true"]')
         chat_box.click()
-        time.sleep(2)
+        time.sleep(1)
         
 
         # Digitar a mensagem
@@ -294,6 +291,7 @@ checkbox_var1 = ctk.BooleanVar()
 checkbox_var2 = ctk.BooleanVar()
 checkbox_var3 = ctk.BooleanVar()
 checkbox_var4 = ctk.BooleanVar()
+checkbox_var5 = ctk.BooleanVar()
 
 checkbox1 = ctk.CTkCheckBox(frame_checklist, text="Checklist", variable=checkbox_var1)
 checkbox1.pack(pady=5)
@@ -303,7 +301,7 @@ checkbox3 = ctk.CTkCheckBox(frame_checklist, text="Comparativo", variable=checkb
 checkbox3.pack(pady=5)
 checkbox4 = ctk.CTkCheckBox(frame_checklist, text="adiq+", variable=checkbox_var4)
 checkbox4.pack(pady=5)
-checkbox5 = ctk.CTkCheckBox(frame_checklist, text="Farol", variable=checkbox_var4)
+checkbox5 = ctk.CTkCheckBox(frame_checklist, text="Farol", variable=checkbox_var5)
 checkbox5.pack(pady=5)
 
 # Função para executar as tarefas associadas aos itens marcados
@@ -317,7 +315,12 @@ def executar_tarefas():
     if checkbox_var3.get():
         tarefa3()
         sleep(10)
-    
+    if checkbox_var4.get():
+        tarefa4()
+        sleep(10)
+    if checkbox_var5.get():
+        tarefa5()
+        
 
 # Botão dentro do checklist para rodar as funções
 btn_executar = ctk.CTkButton(frame_checklist, text="Executar Tarefas", command=executar_tarefas)
