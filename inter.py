@@ -11,18 +11,6 @@ from datetime import datetime, timedelta
 from time import sleep
 import customtkinter as ctk
 
-######################################################################################################### CONFIGURAÇÃO CHROME
-
-# 🔹 Configurar o WebDriver
-chrome_user_data_dir = r"C:\Users\Win10\AppData\Local\Google\Chrome\User Data"
-
-options = webdriver.ChromeOptions()
-options.add_experimental_option("debuggerAddress", "localhost:9222")  # Conectar ao Chrome aberto
-options.add_argument(f"user-data-dir={chrome_user_data_dir}")
-
-# Iniciar WebDriver
-driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
-
 # Configuração da janela principal
 ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
@@ -90,6 +78,18 @@ def checklist():
     t_zabbix = "✅ [Zabbix](http://radar.adiq.local/zabbix/zabbix.php?action=dashboard.view)"
 
     t_uptime = "✅ [Uptime](https://dashboard.uptimerobot.com/monitors)"
+
+    ######################################################################################################### CONFIGURAÇÃO CHROME
+
+    # 🔹 Configurar o WebDriver
+    chrome_user_data_dir = r"C:\Users\Win10\AppData\Local\Google\Chrome\User Data"
+
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option("debuggerAddress", "localhost:9222")  # Conectar ao Chrome aberto
+    options.add_argument(f"user-data-dir={chrome_user_data_dir}")
+
+    # Iniciar WebDriver
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
 
     ######################################################################################################### GRAFANA FISICO
 
