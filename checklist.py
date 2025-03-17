@@ -145,6 +145,9 @@ pix_url = "https://grafana-ocp4.adiq.io/d/f5067f59-9f90-4e0f-b86c-8c2ba32fc3a8/m
 driver.get(pix_url)
 time.sleep(3)  # Tempo para carregar a página
 
+zoom = driver.find_element(By.XPATH, '//*[@id=":rg:"]/div/div[1]/div/div[2]/div/button')
+zoom.click()
+
 # 🔹 Capturar apenas a janela do navegador (evita pegar a tela inteira)
 pix = ImageGrab.grab()
 pix_path = "pix.png"
