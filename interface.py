@@ -11,7 +11,8 @@ from time import sleep
 import customtkinter as ctk
 import os
 from selenium.webdriver.chrome.options import Options
-from datetime import datetime, timedelta
+
+os.environ['TCL_LIBRARY'] = r"C:\Users\Caique\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
  
 # 🔹 Configurar o WebDriver
 chrome_user_data_dir = r"C:\Users\Win10\AppData\Local\Google\Chrome\User Data"
