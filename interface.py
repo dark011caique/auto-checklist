@@ -12,8 +12,6 @@ import customtkinter as ctk
 import os
 from selenium.webdriver.chrome.options import Options
 
-
- 
 # 🔹 Configurar o WebDriver
 chrome_user_data_dir = r"C:\Users\Win10\AppData\Local\Google\Chrome\User Data"
  
@@ -23,7 +21,6 @@ options.add_argument(f"user-data-dir={chrome_user_data_dir}")
  
 # Iniciar WebDriver
 driver = webdriver.Chrome(options=options)
-
 
 
 # Configuração da janela principal
