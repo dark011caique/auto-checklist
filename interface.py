@@ -713,7 +713,7 @@ checkbox1 = ctk.CTkCheckBox(frame_checklist, text="Checklist", variable=checkbox
 checkbox1.pack(pady=5)
 checkbox2 = ctk.CTkCheckBox(frame_checklist, text="Pix", variable=checkbox_var2)
 checkbox2.pack(pady=5)
-checkbox3 = ctk.CTkCheckBox(frame_checklist, text="Comparativo Diário", variable=checkbox_var3)
+checkbox3 = ctk.CTkCheckBox(frame_checklist, text="Comparativo", variable=checkbox_var3)
 checkbox3.pack(pady=5)
 checkbox4 = ctk.CTkCheckBox(frame_checklist, text="adiq+", variable=checkbox_var4)
 checkbox4.pack(pady=5)
