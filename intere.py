@@ -23,7 +23,7 @@ options.add_argument(f"user-data-dir={chrome_user_data_dir}")
 # Iniciar WebDriver
 driver = webdriver.Chrome(options=options)
 
-os.environ['TCL_LIBRARY'] = r"C:\Users\Caique\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
+#os.environ['TCL_LIBRARY'] = r"C:\Users\Caique\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
 
 
 # Configuração da janela principal
