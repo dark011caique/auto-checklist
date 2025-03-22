@@ -10,6 +10,12 @@ import win32clipboard  # Biblioteca para copiar a imagem para a área de transfe
 from datetime import datetime, timedelta
 from time import sleep
 import customtkinter as ctk
+import os
+
+
+
+os.environ['TCL_LIBRARY'] = r"C:\Users\Caique\AppData\Local\Programs\Python\Python313\tcl\tcl8.6"
+
 
 # Configuração da janela principal
 ctk.set_appearance_mode("Dark")
@@ -150,9 +156,9 @@ def checklist():
     driver.get(pix_url)
     time.sleep(3)
 
-    zoom = driver.find_element(By.XPATH, '//*[@id=":rg:"]/div/div[1]/div/div[2]/div/button')
+    zoom = driver.find_element(By.XPATH, "//span[contains(@class, 'css-1riaxdn') and contains(text(), 'Zoom to data')]")
     zoom.click()
-    sleep(2)
+    sleep(3)
 
     pix_path = "pix.png"
     driver.save_screenshot(pix_path)
@@ -269,7 +275,65 @@ def checklist():
 
 
 def tarefa2():
-    print("Tarefa 2 realizada!")
+    # 🔹 Configurar o WebDriver
+    chrome_user_data_dir = r"C:\Users\Win10\AppData\Local\Google\Chrome\User Data"
+
+    options = webdriver.ChromeOptions()
+    options.add_experimental_option("debuggerAddress", "localhost:9222")  # Conectar ao Chrome aberto
+    options.add_argument(f"user-data-dir={chrome_user_data_dir}")
+
+    # Iniciar WebDriver
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+    # 🔹 Acessar o Microsoft Teams Web
+    teams_url = "https://teams.microsoft.com/"
+    driver.get(teams_url)
+    time.sleep(10)  # Tempo para login manual
+
+
+
+    teste = driver.find_element(By.XPATH, '//button[@name="expand-compose"]')
+    teste.click()
+
+    # 🔹 Enviar mensagem no Teams
+    try:
+
+        # Aguarda o campo de texto
+        time.sleep(1)
+        chat_box = driver.find_element(By.XPATH, '//div[@contenteditable="true"]')
+        chat_box.click()
+        time.sleep(1)
+        
+        def copiar_e_enviar_imagem(caminho_imagem, chat_texto):
+            pyautogui.hotkey("ctrl", "b")
+            chat_box.send_keys(chat_texto)
+            pyautogui.hotkey("ctrl", "b")
+            pyautogui.press("enter")
+            time.sleep(1)
+
+                # Abrir a imagem
+            imagem = Image.open(caminho_imagem)
+            output = io.BytesIO()
+            imagem.save(output, format="BMP")
+            data = output.getvalue()[14:]  # Remove os primeiros bytes do cabeçalho BMP
+            output.close()
+
+                # Copiar a imagem para a área de transferência
+            win32clipboard.OpenClipboard()
+            win32clipboard.EmptyClipboard()
+            win32clipboard.SetClipboardData(win32clipboard.CF_DIB, data)
+            win32clipboard.CloseClipboard()
+
+            print(f"✅ Screenshot '{caminho_imagem}' copiado para a área de transferência!")
+
+                # Colar no chat e enviar
+            pyautogui.hotkey("ctrl", "v")
+            time.sleep(1)
+            pyautogui.press("enter")
+            pyautogui.press("enter")
+        
+        copiar_e_enviar_imagem("pix.png", "ACC INFORMA:")
+    except Exception as e:
+        print(f"❌ Erro ao enviar mensagem e imagem: {e}")
 
 def tarefa3():
     print("Tarefa 3 realizada!")
