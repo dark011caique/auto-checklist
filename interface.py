@@ -11,6 +11,11 @@ from time import sleep
 import customtkinter as ctk
 import os
 from selenium.webdriver.chrome.options import Options
+import customtkinter as ctk
+from tkinter import filedialog, messagebox
+import pandas as pd
+import re
+from collections import Counter
 
 # 🔹 Configurar o WebDriver
 chrome_user_data_dir = r"C:\Users\Win10\AppData\Local\Google\Chrome\User Data"
@@ -74,9 +79,9 @@ def checklist():
 
     t_ecommerce = "✅ [Transacional E-commerce](https://grafana-monitoring-hml-grafana-monitoring-hml.apps.svs.adiq.local/d/fe97u788lyneob/visao-geral-transacional-e-commerce?from=now-1h&to=now&orgId=1&refresh=5s)"
 
-    t_unificada = "✅ [Tela Unificada](https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/f1b3c7d4-22a4-4956-be94-1a8c6103d4d4?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-1h,to:now)))"
+    t_unificada = "✅ [Tela Unificada](https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/f1b3c7d4-22a4-4956-be94-1a8c6103d4d4)"
 
-    t_banese = "✅ [Transacional Hub On-Us Banese](https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/3cf45840-2021-11ee-a5b4-81e7ec0febaf?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-1h,to:now)))"
+    t_banese = "✅ [Transacional Hub On-Us Banese](https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/3cf45840-2021-11ee-a5b4-81e7ec0febaf)"
 
     t_spftpass = "✅ [Transacional Softpass](https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/73b07c60-2395-11ef-a2fe-31640ea6f96c)"
 
@@ -120,6 +125,15 @@ def checklist():
 
     time.sleep(1)
 
+    banese_url = "https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/3cf45840-2021-11ee-a5b4-81e7ec0febaf?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-1h,to:now))"
+    driver.get(banese_url)
+    time.sleep(8)
+
+    banese_path = "banese.png"
+    driver.save_screenshot(banese_path)
+
+    time.sleep(1)
+
     unificada_url = "https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/f1b3c7d4-22a4-4956-be94-1a8c6103d4d4"
     driver.get(unificada_url)
     time.sleep(8)
@@ -129,16 +143,7 @@ def checklist():
 
     time.sleep(1)
 
-    banese_url = "https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/3cf45840-2021-11ee-a5b4-81e7ec0febaf"
-    driver.get(banese_url)
-    time.sleep(8)
-
-    banese_path = "banese.png"
-    driver.save_screenshot(banese_path)
-
-    time.sleep(1)
-
-    softpass_url = "https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/73b07c60-2395-11ef-a2fe-31640ea6f96c"
+    softpass_url = "https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/73b07c60-2395-11ef-a2fe-31640ea6f96c?_g=(filters:!(),refreshInterval:(pause:!f,value:10000),time:(from:now-24h%2Fh,to:now))"
     driver.get(softpass_url)
     time.sleep(8)
 
@@ -182,7 +187,7 @@ def checklist():
     # 🔹 Acessar o Microsoft Teams Web
     teams_url = "https://teams.microsoft.com/"
     driver.get(teams_url)
-    time.sleep(10)  # Tempo para login manual
+    time.sleep(7)  # Tempo para login manual
     grupo = driver.find_element(By.XPATH, '//span[@title="Checklist Adiq / Kalendae"]')
     grupo.click()
 
@@ -202,21 +207,21 @@ def checklist():
 
         # Digitar a mensagem
         texto = f"""
-        {mensagem}
+{mensagem}
 
-        {t_fisico}
-        {t_ecommerce}
-        {t_unificada}
-        {t_banese}
-        {t_spftpass}
-        {t_pix}
-        {t_atquivos}
-        {t_zabbix}
-        {t_uptime}
+{t_fisico}
+{t_ecommerce}
+{t_unificada}
+{t_banese}
+{t_spftpass}
+{t_pix}
+{t_atquivos}
+{t_zabbix}
+{t_uptime}
 
-        Legenda: 
-        ✅ Ambiente OK
-        ❌ Incidente em Andamento
+Legenda: 
+✅ Ambiente OK
+❌ Incidente em Andamento
         """
 
         chat_box.send_keys(texto)
@@ -272,7 +277,7 @@ def pix():
     # 🔹 Acessar o Microsoft Teams Web
     teams_url = "https://teams.microsoft.com/"
     driver.get(teams_url)
-    time.sleep(10)  # Tempo para login manual
+    time.sleep(7)  # Tempo para login manual
     grupo = driver.find_element(By.XPATH, '//span[@title="Monitor Pix"]')
     grupo.click()
 
@@ -340,84 +345,59 @@ def comparativo():
 
     # Definir a hora de fim (hora_fim será ajustada conforme a hora_atual)
     if hora_atual.hour >= 20:
-        # Se for após 20:00, o fim será arredondado para 23:30 no mesmo dia
         hora_fim = hora_atual.replace(hour=23, minute=30, second=0, microsecond=0)
-        # Se a hora atual for após 23:30, então o fim será no próximo dia às 03:00 UTC
         if hora_atual >= hora_fim:
             hora_fim = (hoje + timedelta(days=1)).replace(hour=3, minute=0, second=0, microsecond=0)
     elif hora_atual.hour >= 23:
-        # Se o horário atual for após 23:00, ajustar para o próximo dia às 03:00
         hora_fim = (hoje + timedelta(days=1)).replace(hour=3, minute=0, second=0, microsecond=0)
     elif hora_atual.hour == 0:
-        # Se for 00:00, ajusta para 03:30 do mesmo dia
         hora_fim = hora_atual.replace(hour=3, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 1:
-        # Se for 01:00, ajusta para 04:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=4, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 2:
-        # Se for 02:00, ajusta para 04:30 do mesmo dia
         hora_fim = hora_atual.replace(hour=5, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 3:
-        # Se for 03:00, ajusta para 05:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=6, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 4:
-        # Se for 04:00, ajusta para 05:30 do mesmo dia
         hora_fim = hora_atual.replace(hour=7, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 5:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=8, minute=30, second=0, microsecond=0)
-    # Continuar com essa lógica para cada hora do dia conforme necessário...
     elif hora_atual.hour == 6:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=9, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 7:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=10, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 8:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=11, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 9:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=12, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 10:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=13, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 11:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=14, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 12:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=15, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 13:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=16, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 14:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=17, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 15:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=18, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 16:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=19, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 17:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=20, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 18:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=21, minute=30, second=0, microsecond=0)
     elif hora_atual.hour == 19:
-        # Se for 05:00, ajusta para 06:00 do mesmo dia
         hora_fim = hora_atual.replace(hour=22, minute=30, second=0, microsecond=0)
-
-
-
     else:
-        # Caso contrário, o fim será no mesmo dia, mas arredondado para o próximo múltiplo de 30 minutos
         minutos = (hora_atual.minute // 30) * 30
         if hora_atual.minute % 30 != 0:
             minutos += 30
         hora_fim = hora_atual.replace(minute=minutos, second=0, microsecond=0)
+
+    # Garantir que a hora_fim tenha a mesma data de hora_inicio
+    hora_fim = hora_fim.replace(year=hora_inicio.year, month=hora_inicio.month, day=hora_inicio.day)
 
     # Formatar como string no formato que você precisa para a URL
     hora_inicio_str = hora_inicio.strftime('%Y-%m-%dT%H:%M:%S.000Z')
@@ -426,8 +406,11 @@ def comparativo():
     # Exibir o resultado
     print(f"from:'{hora_inicio_str}',to:'{hora_fim_str}'")
 
-    cecomerce = f"https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/b959fda0-d0d8-11ee-b2b0-07a2f1811222?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:'2025-03-14T03:00:00.000Z',to:'2025-03-15T02:59:00.000Z'))"
-    cfisicos = f"https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/8eb71160-1b5f-11ef-bc95-f133a691effe?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:'2025-03-14T03:00:00.000Z',to:'2025-03-15T02:59:00.000Z'))"
+    cecomerce = f"https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/b959fda0-d0d8-11ee-b2b0-07a2f1811222?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:'{hora_inicio_str}',to:'{hora_fim_str}'))"
+    cfisicos = f"https://adqtrjvpkbn01.adiq.local:5601/app/dashboards#/view/8eb71160-1b5f-11ef-bc95-f133a691effe?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:'{hora_inicio_str}',to:'{hora_fim_str}'))"
+
+    print(f"CEcomerce URL: {cecomerce}")
+    print(f"CFisicos URL: {cfisicos}")
 
     cecommerce = cecomerce
     driver.get(cecommerce)
@@ -444,12 +427,12 @@ def comparativo():
 
     cfisico_path = "cfisico.png"
     driver.save_screenshot(cfisico_path)
-    time.sleep(2)
+    time.sleep(1)
 
     # 🔹 Acessar o Microsoft Teams Web
     teams_url = "https://teams.microsoft.com/"
     driver.get(teams_url)
-    time.sleep(20)  # Tempo para login manual
+    time.sleep(7)  # Tempo para login manual
 
     grupo = driver.find_element(By.XPATH, '//span[@title="Comparativo Diário (Autorizações Físicas e Digital)"]')
     grupo.click()
@@ -630,9 +613,10 @@ def adiqPlus():
     # 🔹 Acessar o Microsoft Teams Web
     teams_url = "https://teams.microsoft.com/"
     driver.get(teams_url)
-    time.sleep(10)  # Tempo para login manual
+    time.sleep(7)  # Tempo para login manual
 
-
+    grupo = driver.find_element(By.XPATH, '//span[@title="Envio Adiq+ Dashboard Eagles (Autorizações Físicas)"]')
+    grupo.click()
 
     teste = driver.find_element(By.XPATH, '//button[@name="expand-compose"]')
     teste.click()
@@ -733,10 +717,9 @@ def executar_tarefas():
     if checkbox_var5.get():
         tarefa5()
         
-
 # Botão dentro do checklist para rodar as funções
-btn_executar = ctk.CTkButton(frame_checklist, text="Executar Tarefas", command=executar_tarefas)
-btn_executar.pack(pady=20)
+btn_executar_checklist = ctk.CTkButton(frame_checklist, text="Executar Tarefas", command=executar_tarefas)
+btn_executar_checklist.pack(pady=20)
 
 # Frame inicial
 frame_home = ctk.CTkFrame(frame_main)
@@ -750,8 +733,116 @@ mostrar_frame(frame_home)
 # frame whatsapp
 frame_whatsapp= ctk.CTkFrame(frame_main, fg_color="gray20", corner_radius=10)
 
-frame_whatsapp = ctk.CTkLabel(frame_whatsapp, text="whatsapp", font=("Arial", 18, "bold"))
-frame_whatsapp.pack(pady=10)
+label_whatsapp = ctk.CTkLabel(frame_whatsapp, text="WhatsApp", font=("Arial", 18, "bold"))
+label_whatsapp.pack(pady=10)
+
+selected_file = None  # Variável para armazenar o caminho do arquivo
+
+# Função para selecionar o arquivo
+def upload_file():
+    global selected_file
+    file_path = filedialog.askopenfilename(filetypes=[("CSV files", "*.csv")])
+    if file_path:
+        selected_file = file_path
+        label_file.configure(text=f"Arquivo selecionado:\n{file_path}")
+        button_process.configure(state="normal")  # Ativa o botão de processar
+
+# Função para extrair mensagens de erro
+def extract_messages(content):
+    pattern = r'Message"":""(.*?)"","'
+    messages = [match.group(1) for line in content for match in re.finditer(pattern, line)]
+    
+    grouped_messages = Counter()
+    for msg in messages:
+        key = msg.split(".")[0]  # Pega apenas a parte inicial da mensagem para agrupar
+        grouped_messages[key] += 1
+    
+    return grouped_messages  # Retorna mensagens agrupadas
+
+# Função para processar o arquivo e exibir os resultados
+def process_file():
+    if selected_file:
+        try:
+            with open(selected_file, "r", encoding="utf-8") as file:
+                raw_content = file.readlines()
+
+            # Extração e contagem das mensagens de erro
+            message_counts = extract_messages(raw_content)
+
+            # Criar o texto do relatório formatado
+            error_summary = "\n".join([f"{count:03d} - {message}" for message, count in message_counts.items()])
+            
+            # Variável para somar os números divididos
+            total_sum = 0
+            formatted_error_summary = ""
+            for line in error_summary.split('\n'):
+                count, message = line.split(" - ", 1)  # Divide em duas partes: quantidade e descrição
+                
+                # Ignora mensagens com "Name or service not known"
+                # Ignora mensagens com "Name or service not known", "Connection reset by peer" ou "A network-related or instance-specific error occurred while establishing a connection to SQL Server"
+                if any(ignore_phrase in message for ignore_phrase in [
+                        "Name or service not known", 
+                        "Connection reset by peer",
+                        "Error parsing Infinity value", 
+                        "A network-related or instance-specific error occurred while establishing a connection to SQL Server"]):
+                    continue  # Pula para o próximo erro
+                
+                count_divided = int(count) // 2  # Divide o número por 2
+                total_sum += count_divided  # Soma o número dividido
+                formatted_error_summary += f"{count_divided:03d} - {message}\n"
+
+            # Adiciona o total no final
+            formatted_error_summary += f"\nTotal: {total_sum}"
+
+            # Exibir o resultado na interface
+            result_text.delete(1.0, "end")  # Limpa o conteúdo atual
+            result_text.insert("end", formatted_error_summary.strip())  # Insere o novo conteúdo na caixa de texto
+            
+            # Exibir também no terminal
+            print("\nResumo dos erros:")
+            print(formatted_error_summary)
+            
+            messagebox.showinfo("Sucesso", "Arquivo processado com sucesso!")
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao processar o arquivo:\n{str(e)}")
+    else:
+        messagebox.showwarning("Aviso", "Nenhum arquivo selecionado.")
+
+# Função para copiar o conteúdo da caixa de texto para a área de transferência
+def copiar_resultado():
+    resultado = result_text.get(1.0, "end-1c")  # Obtém o texto da caixa de texto
+    app.clipboard_clear()  # Limpa a área de transferência
+    app.clipboard_append(resultado)  # Adiciona o conteúdo à área de transferência
+    app.update()  # Atualiza a área de transferência
+    messagebox.showinfo("Sucesso", "Conteúdo copiado para a área de transferência!")  # Exibe confirmação
+
+# frame Fechamento Pix
+frame_pix_fechamento = ctk.CTkFrame(frame_main, fg_color="gray20", corner_radius=10)
+
+label_pix_fechamento = ctk.CTkLabel(frame_pix_fechamento, text="Fechamento Pix", font=("Arial", 24, "bold"))
+label_pix_fechamento.pack(pady=10)
+
+# Botão de upload
+button_upload = ctk.CTkButton(frame_pix_fechamento, text="Upload File", command=upload_file)
+button_upload.pack(pady=10)
+
+# Label que mostra o caminho do arquivo
+label_file = ctk.CTkLabel(frame_pix_fechamento, text="Nenhum arquivo selecionado", wraplength=500)
+label_file.pack(pady=10)
+
+# Botão para processar o arquivo (inicia desativado)
+button_process = ctk.CTkButton(frame_pix_fechamento, text="Processar Arquivo", command=process_file, state="disabled")
+button_process.pack(pady=10)
+
+# Botão para copiar o conteúdo da caixa de texto
+button_copy = ctk.CTkButton(frame_pix_fechamento, text="Copiar Resultados", command=copiar_resultado)
+button_copy.pack(pady=10)
+
+# Label para exibir os resultados
+# Caixa de texto rolável para exibir os resultados
+result_text = ctk.CTkTextbox(frame_pix_fechamento, height=200, width=700)  # Caixa de texto com rolagem
+result_text.pack(pady=10)
+
 
 # Botões da sidebar
 btn_home = ctk.CTkButton(frame_sidebar, text="Home", fg_color="gray30", hover_color="gray40", command=lambda: mostrar_frame(frame_home))
@@ -762,6 +853,9 @@ btn_checklist.pack(fill="x", pady=5, padx=10)
 
 btn_whatsapp = ctk.CTkButton(frame_sidebar, text="WhatsApp", fg_color="gray30", hover_color="gray40", command=lambda: mostrar_frame(frame_whatsapp))
 btn_whatsapp.pack(fill="x", pady=5, padx=10)
+
+btn_pix_fechamento = ctk.CTkButton(frame_sidebar, text="Fechamento pix", fg_color="gray30", hover_color="gray40", command=lambda: mostrar_frame(frame_pix_fechamento))
+btn_pix_fechamento.pack(fill="x", pady=5, padx=10)
 
 # Botão do sistema
 btn_system = ctk.CTkOptionMenu(frame_sidebar, values=["System"])
