@@ -1,21 +1,20 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-import time
-from PIL import ImageGrab, Image
+from PIL import  Image
 import pyautogui
-import io
 import win32clipboard  # Biblioteca para copiar a imagem para a área de transferência
 from datetime import datetime, timedelta
 from time import sleep
-import customtkinter as ctk
-import os
-from selenium.webdriver.chrome.options import Options
+import time
 import customtkinter as ctk
 from tkinter import filedialog, messagebox
 import pandas as pd
-import re
 from collections import Counter
+import subprocess
+import re
+import io
 
 # 🔹 Configurar o WebDriver
 chrome_user_data_dir = r"C:\Users\Win10\AppData\Local\Google\Chrome\User Data"
@@ -33,7 +32,7 @@ ctk.set_appearance_mode("Dark")
 ctk.set_default_color_theme("blue")
 
 app = ctk.CTk()
-app.title("ACC Adiq")
+app.title("ACC Adiq - LUA")
 app.geometry("800x500")
 
 # Layout principal
@@ -679,7 +678,7 @@ def tarefa5():
 # Frame do checklist
 frame_checklist = ctk.CTkFrame(frame_main, fg_color="gray20", corner_radius=10)
 
-label_checklist = ctk.CTkLabel(frame_checklist, text="Checklist", font=("Arial", 18, "bold"))
+label_checklist = ctk.CTkLabel(frame_checklist, text="Checklist", font=("Arial", 24, "bold"))
 label_checklist.pack(pady=10)
 
 # Checkboxes com variáveis para verificar o estado
@@ -695,7 +694,7 @@ checkbox2 = ctk.CTkCheckBox(frame_checklist, text="Pix", variable=checkbox_var2)
 checkbox2.pack(pady=5)
 checkbox3 = ctk.CTkCheckBox(frame_checklist, text="Comparativo", variable=checkbox_var3)
 checkbox3.pack(pady=5)
-checkbox4 = ctk.CTkCheckBox(frame_checklist, text="adiq+", variable=checkbox_var4)
+checkbox4 = ctk.CTkCheckBox(frame_checklist, text="Adiq+", variable=checkbox_var4)
 checkbox4.pack(pady=5)
 checkbox5 = ctk.CTkCheckBox(frame_checklist, text="Farol (EM CONSTRUÇÃO)", variable=checkbox_var5)
 checkbox5.pack(pady=5)
@@ -721,20 +720,90 @@ def executar_tarefas():
 btn_executar_checklist = ctk.CTkButton(frame_checklist, text="Executar Tarefas", command=executar_tarefas)
 btn_executar_checklist.pack(pady=20)
 
+
+
 # Frame inicial
 frame_home = ctk.CTkFrame(frame_main)
 
 label_home = ctk.CTkLabel(frame_home, text="Home Page", font=("Arial", 24, "bold"))
-label_home.pack(pady=20)
+label_home.pack(pady=10)
+
+# Manual de instruções (em uma string longa, por exemplo)
+manual_text = """
+Bem-vindo ao Manual de Instruções - Lua!
+
+Olá! Eu sou a Lua, sua assistente virtual, e fui criada para facilitar suas tarefas do dia a dia. 😊
+
+Abaixo estão os principais botões e suas funcionalidades:
+
+HOME:
+Aqui você encontra todas as instruções gerais para navegar pelo sistema e tirar dúvidas. Se precisar de algo, esse é o ponto de partida! 🏠
+
+CHECKLIST:
+Acesso rápido a alguns dos principais checklists. Para enviar um checklist para o Teams, basta preencher o que deseja e enviar diretamente no aplicativo. 
+
+    * Checklist Time: 2m10s
+    * Adiq+: 40s
+    * Comparativo: 40s
+    * PIX: 20s
+
+É só escolher o checklist e enviar rapidamente. ⏱️
+
+WHATSAPP:
+
+    * Envio de mensagens para o grupo BS2 - Checklist - TI diretamente pelo sistema. 📲
+
+FECHAMENTO PIX:
+Extração de informações a partir de arquivos CSV.
+
+    * Insira o arquivo CSV baixado do Elastic e clique em "Processar".
+    
+    * Após isso, basta copiar as informações. (Tempo estimado: 2s)
+
+Notas Importantes:
+
+    * Certifique-se de estar logado no Chrome correto antes de iniciar.
+
+    * Quando for executar o código, lembre-se de clicar na tela do Chrome para garantir que tudo ocorra sem problemas.
+
+    * Caso encontre algum erro, reinicie a aplicação e tente novamente.
+
+Agradecemos por utilizar nosso sistema! Qualquer dúvida, estou aqui para ajudar. 😄
+"""
+
+# Adicionando a área de texto com rolagem
+text_frame = ctk.CTkFrame(frame_home)
+text_frame.pack(pady=20, padx=20)
+
+# Criar o widget de rolagem
+scrollbar = ctk.CTkScrollbar(text_frame)
+scrollbar.pack(side="right", fill="y")
+
+# Criar o widget de TextBox
+text_box = ctk.CTkTextbox(text_frame, wrap="word", height=700, width=700, font=("Arial", 16))
+text_box.pack(side="left", fill="both", expand=True)
+
+# Inserir o texto no TextBox
+text_box.insert("1.0", manual_text)
+
+
 
 # Exibir o frame inicial por padrão
 mostrar_frame(frame_home)
 
+
+
 # frame whatsapp
 frame_whatsapp= ctk.CTkFrame(frame_main, fg_color="gray20", corner_radius=10)
 
-label_whatsapp = ctk.CTkLabel(frame_whatsapp, text="WhatsApp", font=("Arial", 18, "bold"))
+label_whatsapp = ctk.CTkLabel(frame_whatsapp, text="WhatsApp", font=("Arial", 24, "bold"))
 label_whatsapp.pack(pady=10)
+
+manual_whats = """ Em construção no momento. obrigado por aguarda"""
+
+manual_whats_label = ctk.CTkLabel(frame_whatsapp, text=manual_whats, font=("Arial", 12), anchor="w", justify="left")
+manual_whats_label.pack(pady=20, padx=20)
+
 
 selected_file = None  # Variável para armazenar o caminho do arquivo
 
